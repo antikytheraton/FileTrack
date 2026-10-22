@@ -80,9 +80,9 @@ async def async_setup_entry(hass, entry, async_add_entities):
             sc.get(CONF_FILTER, DEFAULT_FILTER),
             sc.get(CONF_SORT, DEFAULT_SORT),
             sc.get(CONF_RECURSIVE, DEFAULT_RECURSIVE),
-            sc.get(CONF_MAX_AGE, DEFAULT_MAX_AGE),
             f"filetrack_{sc['id']}",
-            config_entry=entry
+            config_entry=entry,
+            max_age=sc.get(CONF_MAX_AGE, DEFAULT_MAX_AGE),
         ))
     for yc in yaml_config:
         name = yc["name"]
@@ -98,9 +98,9 @@ async def async_setup_entry(hass, entry, async_add_entities):
             yc.get(CONF_FILTER, DEFAULT_FILTER),
             yc.get(CONF_SORT, DEFAULT_SORT),
             yc.get(CONF_RECURSIVE, DEFAULT_RECURSIVE),
-            yc.get(CONF_MAX_AGE, DEFAULT_MAX_AGE),
             unique_id,
-            config_entry=entry           
+            config_entry=entry,
+            max_age=yc.get(CONF_MAX_AGE, DEFAULT_MAX_AGE),
         ))
     if entities:
         async_add_entities(entities, True)
@@ -111,7 +111,7 @@ class FileTrackSensor(SensorEntity):
     _attr_icon = "mdi:folder"
     _attr_native_unit_of_measurement = "MB"
 
-    def __init__(self, folder_path, name, filter_term, sort, recursive, max_age, entry_id, config_entry=None):
+    def __init__(self, folder_path, name, filter_term, sort, recursive, entry_id, config_entry=None, max_age=0):
         self._attr_name = name
         self._attr_unique_id = entry_id
         self._attr_suggested_object_id = slugify(name)
